@@ -27,7 +27,19 @@ function Gameboard() {
     console.log(boardWithCellValues);
   };
 
-  return { getBoard, markCell, printBoard };
+  const checkWin = (row, column) => {
+    if (
+      (board[row][0].getValue() === board[row][1].getValue() &&
+        board[row][1].getValue() === board[row][2].getValue()) ||
+      (board[0][column].getValue() === board[1][column].getValue() &&
+        board[1][column].getValue() === board[2][column].getValue())
+    )
+      console.log("WIN")
+
+    //TODO: check TIE and diagonal
+  };
+
+  return { getBoard, markCell, printBoard, checkWin };
 }
 
 function Cell() {
@@ -81,11 +93,12 @@ function GameController(
 
     let marked;
     marked = board.markCell(row, column, getActivePlayer().token);
+
+    board.checkWin(row, column);
     if (!marked) switchPlayerTurn();
+
     printNewRound();
   };
-
-  printNewRound();
 
   return {
     playRound,
