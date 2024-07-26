@@ -28,15 +28,33 @@ function Gameboard() {
   };
 
   const checkWin = (row, column) => {
-    if (
-      (board[row][0].getValue() === board[row][1].getValue() &&
-        board[row][1].getValue() === board[row][2].getValue()) ||
-      (board[0][column].getValue() === board[1][column].getValue() &&
-        board[1][column].getValue() === board[2][column].getValue())
-    )
-      console.log("WIN")
+    const dimension = 3;
 
-    //TODO: check TIE and diagonal
+    const value = board[row][column].getValue();
+
+    const equals = (currenValue) => currenValue === value;
+
+    const fullRow = [];
+    for (let i = 0; i < dimension; i++) fullRow.push(board[row][i].getValue());
+
+    const fullColumn = [];
+    for (let i = 0; i < dimension; i++)
+      fullColumn.push(board[i][column].getValue());
+
+    const diagonal1 = [];
+    for (let i = 0; i < dimension; i++) diagonal1.push(board[i][i].getValue());
+
+    const diagonal2 = [];
+    for (let i = 0; i < dimension; i++)
+      diagonal2.push(board[2 - i][i].getValue());
+
+    let win =
+      fullRow.every(equals) ||
+      fullColumn.every(equals) ||
+      diagonal1.every(equals) ||
+      diagonal2.every(equals);
+
+    return win;
   };
 
   return { getBoard, markCell, printBoard, checkWin };
@@ -94,7 +112,7 @@ function GameController(
     let marked;
     marked = board.markCell(row, column, getActivePlayer().token);
 
-    board.checkWin(row, column);
+    console.log(board.checkWin(row, column));
     if (!marked) switchPlayerTurn();
 
     printNewRound();
