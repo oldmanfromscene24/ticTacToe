@@ -57,12 +57,11 @@ function Gameboard() {
   };
 
   const resetBoard = () => {
-      for (let i = 0; i < 3; i++)
-        for (let j = 0; j < 3; j++) {
-      board[i][j].resetToken()
-        }
-
-  }
+    for (let i = 0; i < 3; i++)
+      for (let j = 0; j < 3; j++) {
+        board[i][j].resetToken();
+      }
+  };
 
   return { getBoard, markCell, printBoard, checkWin, resetBoard };
 }
@@ -75,7 +74,7 @@ function Cell() {
   const getValue = () => value;
   const resetToken = () => {
     value = 0;
-  }
+  };
 
   return {
     addToken,
@@ -88,6 +87,9 @@ function GameController(
   playerOneName = "Player One",
   playerTwoName = "Player Two"
 ) {
+  playerOneName = prompt("Please enter player one name.");
+  playerTwoName = prompt("Please enter player two name.");
+
   let board = Gameboard();
 
   const players = [
@@ -141,10 +143,12 @@ function GameController(
     if (board.checkWin(row, column)) {
       switchPlayerTurn();
       activePlayer.win++;
-      console.log(`${activePlayer.name} won the match!`);
+      alert(`${activePlayer.name} won the match!`);
       if (activePlayer.win === 3) {
-        console.log(`${activePlayer.name} is the winner!`.toUpperCase());
-        console.log("Starting a new one...");
+        alert(
+          `${activePlayer.name} is the winner!`.toUpperCase() +
+            "\n Starting a new one..."
+        );
         players[0].win = 0;
         players[1].win = 0;
         tieCount = 0;
@@ -160,17 +164,26 @@ function GameController(
       tieCount++;
       newMatch();
     }
-    
+
     const player1 = document.querySelector(".player1");
     const player2 = document.querySelector(".player2");
     const ties = document.querySelector(".ties");
     const moves = document.querySelector(".moves");
-    
+
     player1.textContent = `${players[0].name}: ${players[0].win}`;
     player2.textContent = `${players[1].name}: ${players[1].win}`;
     ties.textContent = `Ties: ${tieCount}`;
     moves.textContent = `Move: ${moveCount}`;
   };
+
+  const startButton = document.querySelector(".restart");
+  startButton.addEventListener("click", function (event) {   
+    players[0].win = 0;
+    players[1].win = 0;
+    tieCount = 0;
+    newMatch();
+    alert("RESTART");
+  });
 
   return {
     playRound,
@@ -199,11 +212,15 @@ function ScreenController() {
         cellButton.dataset.row = row;
         cellButton.dataset.column = column;
         cellButton.className = "cell";
-        cellButton.textContent = board[row][column].getValue();
+
+        if (board[row][column].getValue() === 1) cellButton.textContent = "X";
+        else if (board[row][column].getValue() === 2)
+          cellButton.textContent = "O";
+        else cellButton.textContent = "";
+
         boardDiv.appendChild(cellButton);
       }
     }
-
   };
 
   function clickHandlerBoard(e) {
